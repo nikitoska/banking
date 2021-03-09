@@ -1,6 +1,5 @@
 package com.banking.customer.exception;
 
-import lombok.extern.apachecommons.CommonsLog;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -9,7 +8,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import javax.jms.JMSException;
 
-@RestControllerAdvice @CommonsLog
+@RestControllerAdvice
 public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(CustomerNotFoundException.class)
@@ -21,9 +20,6 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(JMSException.class)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public String handleJMSException(JMSException e) {
-        log.error(e.getCause());
-        log.error(e.getLinkedException());
-        log.error(e.getMessage());
         return e.getMessage();
     }
 
