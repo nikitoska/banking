@@ -1,0 +1,65 @@
+version: "3"
+
+services:
+  customer:
+    build: customer-service/
+    ports:
+      - 8080:8080
+    depends_on:
+      cassandra-customer:
+        condition: service_healthy
+
+  account:
+    build: account-service/
+    depends_on:
+      cassandra-account:
+        condition: service_healthy
+
+  transaction:
+    build: transaction-service/
+    depends_on:
+      cassandra-transaction:
+        condition: service_healthy
+
+  artemis:
+    image: vromero/activemq-artemis
+    container_name: artemis
+    environment:
+      ARTEMIS_USERNAME: admin
+      ARTEMIS_PASSWORD: admin
+    ports:
+      #      - "8161:8161"
+      - "61616:61616"
+
+  cassandra-customer:
+    image: cassandra
+    environment:
+      - "MAX_HEAP_SIZE=256M"
+      - "HEAP_NEWSIZE=128M"
+    healthcheck:
+      test: ["CMD-SHELL", "[ $$(nodetool statusgossip) = running ]"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  cassandra-account:
+    image: cassandra
+    environment:
+      - "MAX_HEAP_SIZE=256M"
+      - "HEAP_NEWSIZE=128M"
+    healthcheck:
+      test: ["CMD-SHELL", "[ $$(nodetool statusgossip) = running ]"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  cassandra-transaction:
+    image: cassandra
+    environment:
+      - "MAX_HEAP_SIZE=256M"
+      - "HEAP_NEWSIZE=128M"
+    healthcheck:
+      test: ["CMD-SHELL", "[ $$(nodetool statusgossip) = running ]"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
